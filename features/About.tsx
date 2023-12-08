@@ -1,4 +1,10 @@
-export const About = () => {
+import { FC } from 'react';
+
+type AboutComponent = {
+  description: string;
+};
+
+export const About: FC<AboutComponent> = ({ description }) => {
   return (
     <section
       id="about"
@@ -11,21 +17,7 @@ export const About = () => {
         </h2>
       </div>
       <div>
-        <p className="mb-4">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium
-          beatae impedit quas qui voluptates. Cumque delectus facilis ipsa
-          minima molestiae nesciunt odio quod reprehenderit sapiente unde,
-          veritatis vero voluptate voluptatem. Animi beatae eveniet natus quas
-          quibusdam sequi soluta unde. Commodi consectetur consequuntur delectus
-          dignissimos, earum explicabo maxime molestiae necessitatibus nulla,
-          perspiciatis quaerat quas rerum saepe sapiente unde ut vel.
-          Consequatur doloribus eius facere mollitia, officiis provident
-          quibusdam sapiente? Nisi placeat quae tempore. Cum debitis deleniti
-          dolores eveniet expedita impedit in libero magnam nam nemo nobis
-          nulla, possimus, quisquam recusandae reprehenderit soluta
-          voluptatibus? Adipisci, asperiores autem corporis est in ipsa iste nam
-          natus officiis perspiciatis, repellat sequi sunt tempora tempore
-        </p>
+        <p className="mb-4">{description}</p>
       </div>
     </section>
   );
