@@ -12,6 +12,13 @@ import {
   NotionPageResponse,
 } from '@/types/notion';
 
+export type ParsedDatabase = {
+  [k: string]:
+    | NotionDatabaseMultiselect
+    | NotionDatabaseDate
+    | NotionDatabaseText;
+};
+
 export type PortfolioData = {
   fullName: string;
   title: string;
@@ -84,7 +91,8 @@ export const parseNotionPortfolio = ({
               const multiselectHandler = (
                 property: NotionDatabaseMultiselect
               ) => {
-                return property || [];
+                console.log(property, 'property1');
+                return property?.[0][0].split(',') || [];
               };
               if (schema.type === NotionDatabaseTypes.text) {
                 parsedProperties[schema.name] = textHandler(properties[key]);
@@ -121,6 +129,12 @@ export const parseNotionPortfolio = ({
     title: getText('9b5ab295-93e2-4513-a0e5-2f77ebbf9770'),
     subTitle: getText('643287e5-ba33-4c07-b236-d0793b833d5b'),
     description: getText('9c493688-c604-4350-9b98-8a23ef9c2cfe'),
-    experience: [getDatabaseColumn('61241808-8b47-4822-ad45-57bcd2dd46c1')],
+    experience: [
+      getDatabaseColumn('81a81a78-2354-458b-be56-9368a9a4f80c'),
+      getDatabaseColumn('61241808-8b47-4822-ad45-57bcd2dd46c1'),
+      getDatabaseColumn('0f1e8116-2c84-40eb-bbb7-5677e45c0d22'),
+      getDatabaseColumn('55c3697e-0107-48d7-bf24-fcf503744401'),
+      getDatabaseColumn('0013ab0a-cbb4-43f2-bc11-177ac5dbc904'),
+    ],
   };
 };

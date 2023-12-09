@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "dayjs": "^1.11.10",
     "lodash": "^4.17.21",
     "next": "14.0.3",
     "notion-client": "^6.16.0",

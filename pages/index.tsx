@@ -9,6 +9,7 @@ import {
   parseNotionPortfolio,
   PortfolioData,
 } from '@/pages/index/parseNotionPortfolio';
+import { BackgroundLiveGradient } from '@/components/BackgroundLiveGradient';
 
 type PortfolioPageProps = {
   portfolioData: PortfolioData;
@@ -19,21 +20,24 @@ export default function Portfolio({
   rawNotionPage,
 }: PortfolioPageProps) {
   console.log(rawNotionPage, 'rawNotionPage');
-  const { fullName, title, subTitle, description } = portfolioData;
+  const { fullName, title, subTitle, description, experience } = portfolioData;
   return (
-    <Layout>
-      <div className="lg:flex lg:justify-between lg:gap-4">
-        <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-1/2 lg:flex-col lg:justify-between lg:py-24">
-          <ShortInfo fullName={fullName} title={title} subTitle={subTitle} />
-          <Navigation />
-          <SocialNetworks />
-        </header>
-        <main id="content" className="pt-24 lg:w-1/2 lg:py-24">
-          <About description={description} />
-          <Experience />
-        </main>
-      </div>
-    </Layout>
+    <>
+      <BackgroundLiveGradient />
+      <Layout>
+        <div className="lg:flex lg:justify-between lg:gap-4">
+          <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-1/2 lg:flex-col lg:justify-between lg:py-24">
+            <ShortInfo fullName={fullName} title={title} subTitle={subTitle} />
+            <Navigation />
+            <SocialNetworks />
+          </header>
+          <main id="content" className="pt-24 lg:w-1/2 lg:py-24">
+            <About description={description} />
+            <Experience list={experience} />
+          </main>
+        </div>
+      </Layout>
+    </>
   );
 }
 

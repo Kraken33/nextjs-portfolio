@@ -4,7 +4,7 @@ export type NotionTextProperty = {
 
 export type NotionMultiselectProperty = string[];
 
-export type NotionDatabaseMultiselect = string[];
+export type NotionDatabaseMultiselect = [string];
 
 export type NotionDatabaseDate = [
   [string, [['d', { type: 'date'; start_date: string }]]]
