@@ -26,6 +26,7 @@ export type PortfolioData = {
   subTitle: string;
   description: string;
   experience: any;
+  socials: any;
 };
 
 type ParserSchemaBody = {
@@ -161,6 +162,11 @@ export const parseNotionPortfolio = ({
       getDatabaseColumn('0f1e8116-2c84-40eb-bbb7-5677e45c0d22'),
       getDatabaseColumn('55c3697e-0107-48d7-bf24-fcf503744401'),
       getDatabaseColumn('0013ab0a-cbb4-43f2-bc11-177ac5dbc904'),
+    ],
+    socials: [
+      getDatabaseColumn('c84852d1-a679-4fd2-9e23-35cfede50835'),
+      getDatabaseColumn('eda4389b-52ab-436b-9195-4b4652e41e68'),
+      getDatabaseColumn('b95bdfa7-2490-4f3e-b5c8-486b0d08b0f7'),
     ],
   };
 };

@@ -15,8 +15,13 @@ type PortfolioPageProps = {
   portfolioData: PortfolioData;
 };
 
-export default function Portfolio({ portfolioData }: PortfolioPageProps) {
-  const { fullName, title, subTitle, description, experience } = portfolioData;
+export default function Portfolio({
+  portfolioData,
+  rawNotionPage,
+}: PortfolioPageProps) {
+  console.log(rawNotionPage, 'rawNotionPage', portfolioData, 'portfolioData');
+  const { fullName, title, subTitle, description, experience, socials } =
+    portfolioData;
   return (
     <>
       <BackgroundLiveGradient />
@@ -25,7 +30,7 @@ export default function Portfolio({ portfolioData }: PortfolioPageProps) {
           <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-1/2 lg:flex-col lg:justify-between lg:py-24">
             <ShortInfo fullName={fullName} title={title} subTitle={subTitle} />
             <Navigation />
-            <SocialNetworks />
+            <SocialNetworks list={socials} />
           </header>
           <main id="content" className="pt-24 lg:w-1/2 lg:py-24">
             <About description={description} />
