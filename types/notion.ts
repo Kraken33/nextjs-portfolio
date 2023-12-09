@@ -10,7 +10,7 @@ export type NotionDatabaseDate = [
   [string, [['d', { type: 'date'; start_date: string }]]]
 ];
 
-export type NotionDatabaseText = [string];
+export type NotionDatabaseText = [[string]];
 
 export type NotionDatabaseProperty = {
   [key: string]:

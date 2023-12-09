@@ -7,6 +7,7 @@ import {
   NotionBlockProperties,
   NotionDatabaseDate,
   NotionDatabaseMultiselect,
+  NotionDatabaseProperty,
   NotionDatabaseText,
   NotionDatabaseTypes,
   NotionPageResponse,
@@ -27,11 +28,13 @@ export type PortfolioData = {
   experience: any;
 };
 
+type ParserSchemaBody = {
+  type: NotionDatabaseTypes;
+  name: string;
+};
+
 type ParserDatabaseScheme = {
-  [k: string]: {
-    type: NotionDatabaseTypes;
-    name: string;
-  };
+  [k: string]: ParserSchemaBody;
 };
 
 export const parseNotionPortfolio = ({
@@ -60,7 +63,7 @@ export const parseNotionPortfolio = ({
   };
 
   const getText = (
-    (rawNotionPage) => (blockId) =>
+    (rawNotionPage) => (blockId: string) =>
       getTextByProperties({
         properties: getProperties({
           blockId,
@@ -74,14 +77,29 @@ export const parseNotionPortfolio = ({
       properties,
       schema,
     }: {
-      properties: NotionBlockProperties;
+      properties: NotionDatabaseProperty;
       schema: ParserDatabaseScheme;
     }) => {
       if (typeof properties === 'object') {
         return pipe(
           entries,
-          reduce(
-            ({ properties, parsedProperties }, [key, schema]) => {
+          reduce<
+            [string, ParserSchemaBody],
+            {
+              properties: NotionDatabaseProperty;
+              parsedProperties: Record<string, string | string[]>;
+            }
+          >(
+            (
+              {
+                properties,
+                parsedProperties,
+              }: {
+                properties: NotionDatabaseProperty;
+                parsedProperties: Record<string, string | string[]>;
+              },
+              [key, schema]
+            ) => {
               const textHandler = (property: NotionDatabaseText) => {
                 return property?.[0]?.[0] || '';
               };
@@ -91,24 +109,32 @@ export const parseNotionPortfolio = ({
               const multiselectHandler = (
                 property: NotionDatabaseMultiselect
               ) => {
-                console.log(property, 'property1');
                 return property?.[0][0].split(',') || [];
               };
               if (schema.type === NotionDatabaseTypes.text) {
-                parsedProperties[schema.name] = textHandler(properties[key]);
+                parsedProperties[schema.name] = textHandler(
+                  properties[key] as NotionDatabaseText
+                );
               } else if (schema.type === NotionDatabaseTypes.date) {
-                parsedProperties[schema.name] = dateHandler(properties[key]);
+                parsedProperties[schema.name] = dateHandler(
+                  properties[key] as NotionDatabaseDate
+                );
               } else if (schema.type === NotionDatabaseTypes.multiselect) {
                 parsedProperties[schema.name] = multiselectHandler(
-                  properties[key]
+                  properties[key] as NotionDatabaseMultiselect
                 );
               } else if (schema.type === NotionDatabaseTypes.title) {
-                parsedProperties[schema.name] = textHandler(properties[key]);
+                parsedProperties[schema.name] = textHandler(
+                  properties[key] as NotionDatabaseText
+                );
               }
 
               return { properties, parsedProperties };
             },
-            { properties, parsedProperties: {} }
+            {
+              properties,
+              parsedProperties: {},
+            }
           ),
           get('parsedProperties')
         )(schema);
@@ -119,7 +145,7 @@ export const parseNotionPortfolio = ({
     const { schema } = rawNotionPage.collection[parent_id].value;
 
     return getDatabaseByProperties({
-      properties: getProperties({ blockId, rawNotionPage }),
+      properties: getProperties({ blockId, rawNotionPage }) as any,
       schema,
     });
   })(rawNotionPage);

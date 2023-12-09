@@ -1,5 +1,5 @@
-import { ParsedDatabase } from '@/pages/index/parseNotionPortfolio';
-import { FC, useMemo } from 'react';
+import { ParsedDatabase } from '@/utils/parseNotionPortfolio';
+import {FC, ReactNode, useMemo} from 'react';
 import map from 'lodash/fp/map';
 import { parseDate2Range } from '@/utils/date';
 
@@ -95,7 +95,7 @@ export const Experience: FC<ExperienceComponent> = ({ list }) => {
                           className="mt-2 flex flex-wrap"
                           aria-label="Technologies used"
                         >
-                          {map((tag) => (
+                          {map<string, ReactNode>((tag) => (
                             <li className="mr-1.5 mt-2">
                               <div className="flex items-center rounded-full bg-teal-400/10 px-3 py-1 text-xs font-medium leading-5 text-teal-300 ">
                                 {tag}

@@ -1,6 +1,12 @@
 import dayjs from 'dayjs';
 
-export const parseDate2Range = ({ dateFrom, dateTo }) => {
+export const parseDate2Range = ({
+  dateFrom,
+  dateTo,
+}: {
+  dateFrom: string;
+  dateTo: string;
+}) => {
   const from = {
     year: dayjs(dateFrom).year(),
     month: dayjs(dateFrom).month(),
@@ -15,11 +21,15 @@ export const parseDate2Range = ({ dateFrom, dateTo }) => {
       from: dayjs(dateFrom).format('MMM'),
       to: dayjs(dateFrom).format('MMM YYYY'),
     };
-  }
-  if (from.year !== to.year) {
+  } else if (from.year !== to.year) {
     return {
       from: from.year,
       to: to.year,
     };
   }
+
+  return {
+    from: dateFrom,
+    to: dateTo,
+  };
 };

@@ -8,18 +8,14 @@ import { getNotionApi, getNotionPage } from '@/utils/notion';
 import {
   parseNotionPortfolio,
   PortfolioData,
-} from '@/pages/index/parseNotionPortfolio';
+} from '@/utils/parseNotionPortfolio';
 import { BackgroundLiveGradient } from '@/components/BackgroundLiveGradient';
 
 type PortfolioPageProps = {
   portfolioData: PortfolioData;
 };
 
-export default function Portfolio({
-  portfolioData,
-  rawNotionPage,
-}: PortfolioPageProps) {
-  console.log(rawNotionPage, 'rawNotionPage');
+export default function Portfolio({ portfolioData }: PortfolioPageProps) {
   const { fullName, title, subTitle, description, experience } = portfolioData;
   return (
     <>
