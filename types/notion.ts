@@ -31,22 +31,31 @@ export type NotionBlockProperties =
   | NotionMultiselectProperty
   | NotionTextProperty;
 
+export type NotionBlock = {
+  value: {
+    parent_id: string;
+    properties: NotionBlockProperties;
+  };
+};
+
+export type NotionCollectionSchemaBody = {
+  name: string;
+  type: NotionDatabaseTypes;
+};
+
+export type NotionCollectionSchema = {
+  [k: string]: NotionCollectionSchemaBody;
+};
+
 export type NotionPageResponse = {
   collection: {
     [k: string]: {
       value: {
-        schema: {
-          [k: string]: { name: string; type: NotionDatabaseTypes };
-        };
+        schema: NotionCollectionSchema;
       };
     };
   };
   block: {
-    [key: string]: {
-      value: {
-        parent_id: string;
-        properties: NotionBlockProperties;
-      };
-    };
+    [key: string]: NotionBlock;
   };
 };

@@ -1,10 +1,10 @@
-import { ParsedDatabase } from '@/utils/parseNotionPortfolio';
-import {FC, ReactNode, useMemo} from 'react';
+import { PortfolioExperience } from '@/types/portfolio';
+import { FC, ReactNode, useMemo } from 'react';
 import map from 'lodash/fp/map';
 import { parseDate2Range } from '@/utils/date';
 
 type ExperienceComponent = {
-  list: ParsedDatabase;
+  list: PortfolioExperience[];
 };
 
 export const Experience: FC<ExperienceComponent> = ({ list }) => {

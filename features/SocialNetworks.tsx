@@ -1,15 +1,16 @@
 import { Icon, IconCode } from '@/components/Icon';
-import { FC, useMemo } from 'react';
+import { FC, ReactNode, useMemo } from 'react';
 import map from 'lodash/fp/map';
+import { PortfolioSocials } from '@/types/portfolio';
 
 type SocialNetworksComponent = {
-  list: any[];
+  list: PortfolioSocials[];
 };
 
 const socialNetworkLabels = {
-  ln: 'LinkedIn',
-  ig: 'Instagram',
-  github: 'GitHub',
+  [IconCode.ln]: 'LinkedIn',
+  [IconCode.ig]: 'Instagram',
+  [IconCode.github]: 'GitHub',
 };
 
 export const SocialNetworks: FC<SocialNetworksComponent> = ({ list }) => {
@@ -17,17 +18,21 @@ export const SocialNetworks: FC<SocialNetworksComponent> = ({ list }) => {
     <ul className="ml-1 mt-8 flex items-center" aria-label="Social media">
       {useMemo(
         () =>
-          map(({ link, name }) => (
-            <li className="mr-5 text-xs">
+          map<PortfolioSocials, ReactNode>(({ link, name }) => (
+            <li key={name} className="mr-5 text-xs">
               <a
                 className="block hover:text-slate-200"
                 href={link}
                 target="_blank"
                 rel="noreferrer noopener"
-                aria-label={`${socialNetworkLabels[name]} (opens in a new tab)`}
+                aria-label={`${
+                  socialNetworkLabels[name as IconCode]
+                } (opens in a new tab)`}
               >
-                <span className="sr-only">{socialNetworkLabels[name]}</span>
-                <Icon code={IconCode[name]} />
+                <span className="sr-only">
+                  {socialNetworkLabels[name as IconCode]}
+                </span>
+                <Icon code={IconCode[name as IconCode]} />
               </a>
             </li>
           ))(list),

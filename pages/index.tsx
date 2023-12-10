@@ -4,22 +4,20 @@ import { Navigation } from '@/features/Navigation';
 import { SocialNetworks } from '@/features/SocialNetworks';
 import { About } from '@/features/About';
 import { Experience } from '@/features/Experience';
-import { getNotionApi, getNotionPage } from '@/utils/notion';
-import {
-  parseNotionPortfolio,
-  PortfolioData,
-} from '@/utils/parseNotionPortfolio';
+import { PortfolioData } from '@/types/portfolio';
 import { BackgroundLiveGradient } from '@/components/BackgroundLiveGradient';
+import {
+  getCollection,
+  getNotionApi,
+  getNotionPage,
+  getText,
+} from '@/utils/notion';
 
 type PortfolioPageProps = {
   portfolioData: PortfolioData;
 };
 
-export default function Portfolio({
-  portfolioData,
-  rawNotionPage,
-}: PortfolioPageProps) {
-  console.log(rawNotionPage, 'rawNotionPage', portfolioData, 'portfolioData');
+export default function Portfolio({ portfolioData }: PortfolioPageProps) {
   const { fullName, title, subTitle, description, experience, socials } =
     portfolioData;
   return (
@@ -48,10 +46,24 @@ export async function getStaticProps() {
     notionApi,
     pageId: '0fbda467e31b44fb84519b993e7fed86',
   });
+
+  const getTextByBlockID = getText(rawNotionPage);
+  const getCollectionByCollectionID = getCollection(rawNotionPage);
+
   return {
     props: {
-      portfolioData: parseNotionPortfolio({ rawNotionPage }),
-      rawNotionPage,
+      portfolioData: {
+        fullName: getTextByBlockID('ad53d01c-b61b-4675-9f33-a4d15543cd47'),
+        title: getTextByBlockID('9b5ab295-93e2-4513-a0e5-2f77ebbf9770'),
+        subTitle: getTextByBlockID('643287e5-ba33-4c07-b236-d0793b833d5b'),
+        description: getTextByBlockID('9c493688-c604-4350-9b98-8a23ef9c2cfe'),
+        experience: getCollectionByCollectionID(
+          'b28c9a40-c9cb-40d5-b5b8-bacc8060a1ee'
+        ),
+        socials: getCollectionByCollectionID(
+          'bc0b9674-be52-4d59-b22d-643b49d3cad9'
+        ),
+      },
     },
   };
 }
