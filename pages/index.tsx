@@ -12,14 +12,20 @@ import {
   getNotionPage,
   getText,
 } from '@/utils/notion';
+import { useCallback, useState } from 'react';
+import { NavigationSections } from '@/types/navigation';
 
 type PortfolioPageProps = {
   portfolioData: PortfolioData;
 };
 
 export default function Portfolio({ portfolioData }: PortfolioPageProps) {
+  const [activeNavKey, setNavKey] = useState<NavigationSections>(
+    NavigationSections.about
+  );
   const { fullName, title, subTitle, description, experience, socials } =
     portfolioData;
+
   return (
     <>
       <BackgroundLiveGradient />
@@ -27,12 +33,24 @@ export default function Portfolio({ portfolioData }: PortfolioPageProps) {
         <div className="lg:flex lg:justify-between lg:gap-4">
           <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-1/2 lg:flex-col lg:justify-between lg:py-24">
             <ShortInfo fullName={fullName} title={title} subTitle={subTitle} />
-            <Navigation />
+            <Navigation activeKey={activeNavKey} />
             <SocialNetworks list={socials} />
           </header>
           <main id="content" className="pt-24 lg:w-1/2 lg:py-24">
-            <About description={description} />
-            <Experience list={experience} />
+            <About
+              onEntering={useCallback(
+                () => setNavKey(NavigationSections.about),
+                []
+              )}
+              description={description}
+            />
+            <Experience
+              onEntering={useCallback(
+                () => setNavKey(NavigationSections.experience),
+                []
+              )}
+              list={experience}
+            />
           </main>
         </div>
       </Layout>

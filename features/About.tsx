@@ -1,12 +1,23 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
+import { useInViewEffect } from 'react-hook-inview';
 
 type AboutComponent = {
+  onEntering: () => void;
   description: string;
 };
 
-export const About: FC<AboutComponent> = ({ description }) => {
+export const About: FC<AboutComponent> = memo(({ description, onEntering }) => {
+  const ref = useInViewEffect(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        onEntering();
+      }
+    },
+    { threshold: 0.5 }
+  );
   return (
     <section
+      ref={ref as any}
       id="about"
       className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24"
       aria-label="About me"
@@ -21,4 +32,4 @@ export const About: FC<AboutComponent> = ({ description }) => {
       </div>
     </section>
   );
-};
+});

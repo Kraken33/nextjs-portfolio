@@ -1,5 +1,5 @@
 import { Icon, IconCode } from '@/components/Icon';
-import { FC, ReactNode, useMemo } from 'react';
+import { FC, ReactNode, useMemo, memo } from 'react';
 import map from 'lodash/fp/map';
 import { PortfolioSocials } from '@/types/portfolio';
 
@@ -13,7 +13,7 @@ const socialNetworkLabels = {
   [IconCode.github]: 'GitHub',
 };
 
-export const SocialNetworks: FC<SocialNetworksComponent> = ({ list }) => {
+export const SocialNetworks: FC<SocialNetworksComponent> = memo(({ list }) => {
   return (
     <ul className="ml-1 mt-8 flex items-center" aria-label="Social media">
       {useMemo(
@@ -40,4 +40,4 @@ export const SocialNetworks: FC<SocialNetworksComponent> = ({ list }) => {
       )}
     </ul>
   );
-};
+});

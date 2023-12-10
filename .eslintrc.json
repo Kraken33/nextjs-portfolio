@@ -11,6 +11,7 @@
     "import/prefer-default-export": "off",
     "max-len": "off",
     "import/no-absolute-path": "off",
-    "import/no-unresolved": "off"
+    "import/no-unresolved": "off",
+    "react/display-name": "off"
   }
 }
