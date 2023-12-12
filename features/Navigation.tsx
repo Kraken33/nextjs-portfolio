@@ -29,7 +29,7 @@ export const Navigation: FC<NavigationComponent> = memo(({ activeKey }) => {
     <nav className="nav hidden lg:block" aria-label="In-page jump links">
       <ul className="mt-16 w-max">
         {map<NavigationSections, ReactNode>((key) => (
-          <li>
+          <li key={key}>
             <a className="group flex items-center py-3 active" href={`#${key}`}>
               <span
                 className={`nav-indicator mr-4 h-px transition-all group-hover:w-16 group-hover:bg-slate-200 motion-reduce:transition-none ${getClassNames(

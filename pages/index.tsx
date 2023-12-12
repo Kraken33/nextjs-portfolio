@@ -14,17 +14,30 @@ import {
 } from '@/utils/notion';
 import { useCallback, useState } from 'react';
 import { NavigationSections } from '@/types/navigation';
+import { Projects } from '@/features/Projects';
+import compact from 'lodash/fp/compact';
 
 type PortfolioPageProps = {
   portfolioData: PortfolioData;
 };
 
-export default function Portfolio({ portfolioData }: PortfolioPageProps) {
+export default function Portfolio({
+  portfolioData,
+  rawNotionPage,
+}: PortfolioPageProps) {
+  console.log(portfolioData, 'portfolioData', rawNotionPage, 'rawNotionPage');
   const [activeNavKey, setNavKey] = useState<NavigationSections>(
     NavigationSections.about
   );
-  const { fullName, title, subTitle, description, experience, socials } =
-    portfolioData;
+  const {
+    fullName,
+    title,
+    subTitle,
+    description,
+    experience,
+    socials,
+    projects,
+  } = portfolioData;
 
   return (
     <>
@@ -51,6 +64,13 @@ export default function Portfolio({ portfolioData }: PortfolioPageProps) {
               )}
               list={experience}
             />
+            <Projects
+              list={projects}
+              onEntering={useCallback(
+                () => setNavKey(NavigationSections.projects),
+                []
+              )}
+            />
           </main>
         </div>
       </Layout>
@@ -67,21 +87,33 @@ export async function getStaticProps() {
 
   const getTextByBlockID = getText(rawNotionPage);
   const getCollectionByCollectionID = getCollection(rawNotionPage);
+  let d = null;
+  try {
+    d = {
+      fullName: getTextByBlockID('ad53d01c-b61b-4675-9f33-a4d15543cd47'),
+      title: getTextByBlockID('9b5ab295-93e2-4513-a0e5-2f77ebbf9770'),
+      subTitle: getTextByBlockID('643287e5-ba33-4c07-b236-d0793b833d5b'),
+      description: getTextByBlockID('9c493688-c604-4350-9b98-8a23ef9c2cfe'),
+      experience: getCollectionByCollectionID(
+        'b28c9a40-c9cb-40d5-b5b8-bacc8060a1ee'
+      ),
+      socials: getCollectionByCollectionID(
+        'bc0b9674-be52-4d59-b22d-643b49d3cad9'
+      ),
+      projects: compact(
+        getCollectionByCollectionID('7df20f1c-4b83-4854-8c47-461972f83f69')
+      ),
+    };
+  } catch (e) {
+    console.log(e);
+  }
+
+  console.log(d, 'd');
 
   return {
     props: {
-      portfolioData: {
-        fullName: getTextByBlockID('ad53d01c-b61b-4675-9f33-a4d15543cd47'),
-        title: getTextByBlockID('9b5ab295-93e2-4513-a0e5-2f77ebbf9770'),
-        subTitle: getTextByBlockID('643287e5-ba33-4c07-b236-d0793b833d5b'),
-        description: getTextByBlockID('9c493688-c604-4350-9b98-8a23ef9c2cfe'),
-        experience: getCollectionByCollectionID(
-          'b28c9a40-c9cb-40d5-b5b8-bacc8060a1ee'
-        ),
-        socials: getCollectionByCollectionID(
-          'bc0b9674-be52-4d59-b22d-643b49d3cad9'
-        ),
-      },
+      rawNotionPage,
+      portfolioData: d,
     },
   };
 }

@@ -5,6 +5,7 @@ import {
   NotionCollectionSchema,
   NotionCollectionSchemaBody,
   NotionDatabaseDate,
+  NotionDatabaseFile,
   NotionDatabaseMultiselect,
   NotionDatabaseProperty,
   NotionDatabaseText,
@@ -48,6 +49,13 @@ export const getProperties = ({
   blockId: string;
   rawNotionPage: NotionPageResponse;
 }) => rawNotionPage.block[blockId].value.properties;
+const getSpaceId = ({
+  blockId,
+  rawNotionPage,
+}: {
+  blockId: string;
+  rawNotionPage: NotionPageResponse;
+}) => rawNotionPage.block[blockId].value.space_id;
 const getTextByProperties = ({
   properties,
 }: {
@@ -74,9 +82,13 @@ export const getCollection =
     const getDatabaseByProperties = ({
       properties,
       schema,
+      spaceId,
+      blockId,
     }: {
       properties: NotionDatabaseProperty;
       schema: NotionCollectionSchema;
+      spaceId: string;
+      blockId: string;
     }) => {
       if (typeof properties === 'object') {
         return pipe(
@@ -109,6 +121,23 @@ export const getCollection =
               ) => {
                 return property?.[0][0].split(',') || [];
               };
+              const fileHandler = (property: NotionDatabaseFile) => {
+                const fileUrl = property[0][1][0][1];
+                const notionStorageUrlParams = new URLSearchParams();
+                notionStorageUrlParams.set('id', blockId);
+                notionStorageUrlParams.set('table', 'block');
+                notionStorageUrlParams.set('spaceId', spaceId);
+                notionStorageUrlParams.set('width', '300');
+                notionStorageUrlParams.set('userId', '');
+                notionStorageUrlParams.set('cache', 'v2');
+                return [
+                  process.env.NOTION_PORTFOLIO_PAGE_URL,
+                  'image',
+                  `${encodeURIComponent(
+                    fileUrl
+                  )}?${notionStorageUrlParams.toString()}`,
+                ].join('/');
+              };
               if (schema.type === NotionDatabaseTypes.text) {
                 parsedProperties[schema.name] = textHandler(
                   properties[key] as NotionDatabaseText
@@ -124,6 +153,10 @@ export const getCollection =
               } else if (schema.type === NotionDatabaseTypes.title) {
                 parsedProperties[schema.name] = textHandler(
                   properties[key] as NotionDatabaseText
+                );
+              } else if (schema.type === NotionDatabaseTypes.file) {
+                parsedProperties[schema.name] = fileHandler(
+                  properties[key] as NotionDatabaseFile
                 );
               }
 
@@ -146,6 +179,8 @@ export const getCollection =
           if (properties.value.parent_id === collectionId) {
             (acc as NotionDatabaseProperty[]).push(
               getDatabaseByProperties({
+                blockId,
+                spaceId: getSpaceId({ blockId, rawNotionPage }),
                 properties: getProperties({
                   blockId,
                   rawNotionPage,

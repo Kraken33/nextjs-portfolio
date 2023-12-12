@@ -10,13 +10,16 @@ export type NotionDatabaseDate = [
   [string, [['d', { type: 'date'; start_date: string }]]]
 ];
 
+export type NotionDatabaseFile = [[string, [['a', string]]]];
+
 export type NotionDatabaseText = [[string]];
 
 export type NotionDatabaseProperty = {
   [key: string]:
     | NotionDatabaseDate
     | NotionDatabaseText
-    | NotionDatabaseMultiselect;
+    | NotionDatabaseMultiselect
+    | NotionDatabaseFile;
 };
 
 export enum NotionDatabaseTypes {
@@ -24,6 +27,7 @@ export enum NotionDatabaseTypes {
   'text' = 'text',
   'date' = 'date',
   'title' = 'title',
+  'file' = 'file',
 }
 
 export type NotionBlockProperties =
@@ -33,6 +37,8 @@ export type NotionBlockProperties =
 
 export type NotionBlock = {
   value: {
+    id: string;
+    space_id: string;
     parent_id: string;
     properties: NotionBlockProperties;
   };

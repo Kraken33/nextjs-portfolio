@@ -11,6 +11,14 @@ export type PortfolioSocials = {
   link: string;
 };
 
+export type PortfolioProjects = {
+  name: string;
+  description: string;
+  techTags: string[];
+  image: string;
+  href: string;
+};
+
 export type PortfolioData = {
   fullName: string;
   title: string;
@@ -18,4 +26,5 @@ export type PortfolioData = {
   description: string;
   experience: PortfolioExperience[];
   socials: PortfolioSocials[];
+  projects: PortfolioProjects[];
 };
