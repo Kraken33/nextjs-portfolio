@@ -21,11 +21,7 @@ type PortfolioPageProps = {
   portfolioData: PortfolioData;
 };
 
-export default function Portfolio({
-  portfolioData,
-  rawNotionPage,
-}: PortfolioPageProps) {
-  console.log(portfolioData, 'portfolioData', rawNotionPage, 'rawNotionPage');
+export default function Portfolio({ portfolioData }: PortfolioPageProps) {
   const [activeNavKey, setNavKey] = useState<NavigationSections>(
     NavigationSections.about
   );
