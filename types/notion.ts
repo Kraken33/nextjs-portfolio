@@ -1,6 +1,6 @@
-export type NotionTextPropertyOptions = '_' | 'b';
+export type NotionTextPropertyOptions = '_' | 'b' | 'i' | null;
 
-export type NotionDatabaseText = [string, [NotionTextPropertyOptions]][];
+export type NotionDatabaseText = [string, NotionTextPropertyOptions[]][];
 
 export type NotionTextProperty = {
   title: NotionDatabaseText;
@@ -68,7 +68,7 @@ export type NotionPageResponse = {
   };
 };
 
-export type NotionTextSchema = Array<{
+export type NotionTextSchema = {
   text: string;
   options: NotionTextPropertyOptions[];
-}>;
+}[];

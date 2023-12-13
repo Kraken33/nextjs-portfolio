@@ -14,7 +14,6 @@ const socialNetworkLabels = {
 };
 
 export const SocialNetworks: FC<SocialNetworksComponent> = memo(({ list }) => {
-  console.log(JSON.stringify(list), 'list');
   return (
     <ul className="ml-1 mt-8 flex items-center" aria-label="Social media">
       {useMemo(

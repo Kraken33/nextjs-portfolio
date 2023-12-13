@@ -11,6 +11,7 @@ import {
   NotionDatabaseText,
   NotionDatabaseTypes,
   NotionPageResponse,
+  NotionTextSchema,
 } from '@/types/notion';
 import pipe from 'lodash/fp/pipe';
 import entries from 'lodash/fp/entries';
@@ -59,11 +60,10 @@ const getSpaceId = ({
 }) => rawNotionPage.block[blockId].value.space_id;
 
 const title2RenderSchema = (textMap: NotionDatabaseText) => {
-  console.log(textMap, 'textMap@@');
   return textMap.map(([text, options]) => ({
     text,
-    options: options?.[0] || null,
-  }));
+    options: options || null,
+  })) as NotionTextSchema;
 };
 
 const getTextByProperties = ({
@@ -109,7 +109,7 @@ export const getCollection =
             [string, NotionCollectionSchemaBody],
             {
               properties: NotionDatabaseProperty;
-              parsedProperties: Record<string, string | string[]>;
+              parsedProperties: any;
             }
           >(
             (
@@ -118,7 +118,10 @@ export const getCollection =
                 parsedProperties,
               }: {
                 properties: NotionDatabaseProperty;
-                parsedProperties: Record<string, string | string[]>;
+                parsedProperties: Record<
+                  string,
+                  string | NotionTextSchema | string[]
+                >;
               },
               [key, schema]
             ) => {

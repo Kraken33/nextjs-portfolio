@@ -16,7 +16,7 @@ export const About: FC<AboutComponent> = memo(({ description, onEntering }) => {
     },
     { threshold: 0.5 }
   );
-  console.log(description, 'description');
+
   return (
     <section
       ref={ref as any}

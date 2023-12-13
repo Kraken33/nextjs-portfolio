@@ -61,7 +61,7 @@ export const Experience: FC<ExperienceComponent> = memo(
                         <div className="z-10 sm:col-span-6">
                           <h3 className="font-medium leading-snug text-slate-200">
                             <div>
-                              <div
+                              <a
                                 className="inline-flex items-baseline font-medium leading-tight text-slate-200 hover:text-teal-300 focus-visible:text-teal-300  group/link text-base"
                                 href="#"
                                 target="_blank"
@@ -88,7 +88,7 @@ export const Experience: FC<ExperienceComponent> = memo(
                                     </svg>
                                   </span>
                                 </span>
-                              </div>
+                              </a>
                             </div>
                             {/*<div>*/}
                             {/*  <div className="text-slate-500" aria-hidden="true">*/}
