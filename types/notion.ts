@@ -1,5 +1,9 @@
+export type NotionTextPropertyOptions = '_' | 'b';
+
+export type NotionDatabaseText = [string, [NotionTextPropertyOptions]][];
+
 export type NotionTextProperty = {
-  title: [[string]];
+  title: NotionDatabaseText;
 };
 
 export type NotionMultiselectProperty = string[];
@@ -11,8 +15,6 @@ export type NotionDatabaseDate = [
 ];
 
 export type NotionDatabaseFile = [[string, [['a', string]]]];
-
-export type NotionDatabaseText = [[string]];
 
 export type NotionDatabaseProperty = {
   [key: string]:
@@ -65,3 +67,8 @@ export type NotionPageResponse = {
     [key: string]: NotionBlock;
   };
 };
+
+export type NotionTextSchema = Array<{
+  text: string;
+  options: NotionTextPropertyOptions[];
+}>;

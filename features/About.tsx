@@ -1,5 +1,6 @@
 import { FC, memo } from 'react';
 import { useInViewEffect } from 'react-hook-inview';
+import { RenderNotionTextBlock } from '@/components/RenderNotionTextBlock';
 
 type AboutComponent = {
   onEntering: () => void;
@@ -15,6 +16,7 @@ export const About: FC<AboutComponent> = memo(({ description, onEntering }) => {
     },
     { threshold: 0.5 }
   );
+  console.log(description, 'description');
   return (
     <section
       ref={ref as any}
@@ -28,7 +30,9 @@ export const About: FC<AboutComponent> = memo(({ description, onEntering }) => {
         </h2>
       </div>
       <div>
-        <p className="mb-4">{description}</p>
+        <p className="mb-4">
+          <RenderNotionTextBlock block={description} />
+        </p>
       </div>
     </section>
   );

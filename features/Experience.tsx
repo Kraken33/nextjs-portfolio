@@ -3,6 +3,7 @@ import { FC, ReactNode, useMemo, memo } from 'react';
 import map from 'lodash/fp/map';
 import { parseDate2Range } from '@/utils/date';
 import { useInViewEffect } from 'react-hook-inview';
+import { RenderNotionTextBlock } from '@/components/RenderNotionTextBlock';
 
 type ExperienceComponent = {
   list: PortfolioExperience[];
@@ -60,9 +61,9 @@ export const Experience: FC<ExperienceComponent> = memo(
                         <div className="z-10 sm:col-span-6">
                           <h3 className="font-medium leading-snug text-slate-200">
                             <div>
-                              <a
+                              <div
                                 className="inline-flex items-baseline font-medium leading-tight text-slate-200 hover:text-teal-300 focus-visible:text-teal-300  group/link text-base"
-                                href="https://upstatement.com"
+                                href="#"
                                 target="_blank"
                                 rel="noreferrer noopener"
                                 aria-label="Lead Engineer at Lorem (opens in a new tab)"
@@ -87,7 +88,7 @@ export const Experience: FC<ExperienceComponent> = memo(
                                     </svg>
                                   </span>
                                 </span>
-                              </a>
+                              </div>
                             </div>
                             {/*<div>*/}
                             {/*  <div className="text-slate-500" aria-hidden="true">*/}
@@ -101,7 +102,7 @@ export const Experience: FC<ExperienceComponent> = memo(
                             {/*</div>*/}
                           </h3>
                           <p className="mt-2 text-sm leading-normal">
-                            {description}
+                            <RenderNotionTextBlock block={description} />
                           </p>
                           <ul
                             className="mt-2 flex flex-wrap"

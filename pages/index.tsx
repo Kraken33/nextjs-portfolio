@@ -41,8 +41,14 @@ export default function Portfolio({ portfolioData }: PortfolioPageProps) {
       <Layout>
         <div className="lg:flex lg:justify-between lg:gap-4">
           <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-1/2 lg:flex-col lg:justify-between lg:py-24">
-            <ShortInfo fullName={fullName} title={title} subTitle={subTitle} />
-            <Navigation activeKey={activeNavKey} />
+            <div>
+              <ShortInfo
+                fullName={fullName}
+                title={title}
+                subTitle={subTitle}
+              />
+              <Navigation activeKey={activeNavKey} />
+            </div>
             <SocialNetworks list={socials} />
           </header>
           <main id="content" className="pt-24 lg:w-1/2 lg:py-24">
@@ -83,33 +89,24 @@ export async function getStaticProps() {
 
   const getTextByBlockID = getText(rawNotionPage);
   const getCollectionByCollectionID = getCollection(rawNotionPage);
-  let d = null;
-  try {
-    d = {
-      fullName: getTextByBlockID('ad53d01c-b61b-4675-9f33-a4d15543cd47'),
-      title: getTextByBlockID('9b5ab295-93e2-4513-a0e5-2f77ebbf9770'),
-      subTitle: getTextByBlockID('643287e5-ba33-4c07-b236-d0793b833d5b'),
-      description: getTextByBlockID('9c493688-c604-4350-9b98-8a23ef9c2cfe'),
-      experience: getCollectionByCollectionID(
-        'b28c9a40-c9cb-40d5-b5b8-bacc8060a1ee'
-      ),
-      socials: getCollectionByCollectionID(
-        'bc0b9674-be52-4d59-b22d-643b49d3cad9'
-      ),
-      projects: compact(
-        getCollectionByCollectionID('7df20f1c-4b83-4854-8c47-461972f83f69')
-      ),
-    };
-  } catch (e) {
-    console.log(e);
-  }
-
-  console.log(d, 'd');
 
   return {
     props: {
-      rawNotionPage,
-      portfolioData: d,
+      portfolioData: {
+        fullName: getTextByBlockID('ad53d01c-b61b-4675-9f33-a4d15543cd47'),
+        title: getTextByBlockID('9b5ab295-93e2-4513-a0e5-2f77ebbf9770'),
+        subTitle: getTextByBlockID('643287e5-ba33-4c07-b236-d0793b833d5b'),
+        description: getTextByBlockID('9c493688-c604-4350-9b98-8a23ef9c2cfe'),
+        experience: getCollectionByCollectionID(
+          'b28c9a40-c9cb-40d5-b5b8-bacc8060a1ee'
+        ),
+        socials: getCollectionByCollectionID(
+          'bc0b9674-be52-4d59-b22d-643b49d3cad9'
+        ),
+        projects: compact(
+          getCollectionByCollectionID('7df20f1c-4b83-4854-8c47-461972f83f69')
+        ),
+      },
     },
   };
 }

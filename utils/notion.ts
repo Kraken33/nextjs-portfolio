@@ -49,6 +49,7 @@ export const getProperties = ({
   blockId: string;
   rawNotionPage: NotionPageResponse;
 }) => rawNotionPage.block[blockId].value.properties;
+
 const getSpaceId = ({
   blockId,
   rawNotionPage,
@@ -56,13 +57,24 @@ const getSpaceId = ({
   blockId: string;
   rawNotionPage: NotionPageResponse;
 }) => rawNotionPage.block[blockId].value.space_id;
+
+const title2RenderSchema = (textMap: NotionDatabaseText) => {
+  console.log(textMap, 'textMap@@');
+  return textMap.map(([text, options]) => ({
+    text,
+    options: options?.[0] || null,
+  }));
+};
+
 const getTextByProperties = ({
   properties,
 }: {
   properties: NotionBlockProperties;
 }) => {
-  if ('title' in properties) {
-    return properties.title[0][0];
+  if ('title' in properties && properties.title) {
+    return properties.title.length > 1
+      ? title2RenderSchema(properties.title as NotionDatabaseText)
+      : properties.title[0][0];
   }
 
   return '';
@@ -111,7 +123,11 @@ export const getCollection =
               [key, schema]
             ) => {
               const textHandler = (property: NotionDatabaseText) => {
-                return property?.[0]?.[0] || '';
+                return property
+                  ? property.length > 1
+                    ? title2RenderSchema(property)
+                    : property[0][0]
+                  : '';
               };
               const dateHandler = (property: NotionDatabaseDate) => {
                 return property[0][1][0][1].start_date;

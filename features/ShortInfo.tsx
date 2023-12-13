@@ -1,4 +1,5 @@
 import { FC, memo } from 'react';
+import { RenderNotionTextBlock } from '@/components/RenderNotionTextBlock';
 
 type ShortInfoComponent = {
   fullName: string;
@@ -11,12 +12,16 @@ export const ShortInfo: FC<ShortInfoComponent> = memo(
     return (
       <>
         <h1 className="text-4xl font-bold tracking-tight text-slate-200 sm:text-5xl">
-          <a href="#">{fullName}</a>
+          <a href="#">
+            <RenderNotionTextBlock block={fullName} />
+          </a>
         </h1>
         <h2 className="mt-3 text-lg font-medium tracking-tight text-slate-200 sm:text-xl">
-          {title}
+          <RenderNotionTextBlock block={title} />
         </h2>
-        <p className="mt-4 max-w-xs leading-normal">{subTitle}</p>
+        <p className="mt-4 max-w-xs leading-normal">
+          <RenderNotionTextBlock block={subTitle} />
+        </p>
       </>
     );
   }
