@@ -139,7 +139,6 @@ export const getCollection =
               };
               const getHandler =
                 (handlers: any) => (type: NotionDatabaseTypes) => {
-                  console.log(type, 'type');
                   if (handlers[type]) {
                     return handlers[type];
                   }

@@ -16,6 +16,9 @@ import { useCallback, useState } from 'react';
 import { NavigationSections } from '@/types/navigation';
 import { Projects } from '@/features/Projects';
 import compact from 'lodash/fp/compact';
+import sortBy from 'lodash/fp/sortBy';
+import reverse from 'lodash/fp/reverse';
+import pipe from 'lodash/fp/pipe';
 
 type PortfolioPageProps = {
   portfolioData: PortfolioData;
@@ -97,9 +100,10 @@ export async function getStaticProps() {
         title: getTextByBlockID('9b5ab295-93e2-4513-a0e5-2f77ebbf9770'),
         subTitle: getTextByBlockID('643287e5-ba33-4c07-b236-d0793b833d5b'),
         description: getTextByBlockID('9c493688-c604-4350-9b98-8a23ef9c2cfe'),
-        experience: getCollectionByCollectionID(
-          'b28c9a40-c9cb-40d5-b5b8-bacc8060a1ee'
-        ),
+        experience: pipe(
+          sortBy('startedAt'),
+          reverse
+        )(getCollectionByCollectionID('b28c9a40-c9cb-40d5-b5b8-bacc8060a1ee')),
         socials: getCollectionByCollectionID(
           'bc0b9674-be52-4d59-b22d-643b49d3cad9'
         ),
