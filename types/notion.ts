@@ -37,12 +37,12 @@ export type NotionBlockProperties =
   | NotionMultiselectProperty
   | NotionTextProperty;
 
-export type NotionBlock = {
+export type NotionBlock<T = NotionBlockProperties> = {
   value: {
     id: string;
     space_id: string;
     parent_id: string;
-    properties: NotionBlockProperties;
+    properties: T;
   };
 };
 
@@ -55,7 +55,7 @@ export type NotionCollectionSchema = {
   [k: string]: NotionCollectionSchemaBody;
 };
 
-export type NotionPageResponse = {
+export type NotionPageResponse<T = NotionBlockProperties> = {
   collection: {
     [k: string]: {
       value: {
@@ -64,7 +64,7 @@ export type NotionPageResponse = {
     };
   };
   block: {
-    [key: string]: NotionBlock;
+    [key: string]: NotionBlock<T>;
   };
 };
 

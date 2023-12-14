@@ -36,13 +36,6 @@ export const getNotionPage = async ({
   return await notionApi.getPage(pageId);
 };
 
-// export type ParsedDatabase = {
-//   [k: string]:
-//     | NotionDatabaseMultiselect
-//     | NotionDatabaseDate
-//     | NotionDatabaseText;
-// };
-
 export const getProperties = ({
   blockId,
   rawNotionPage,
@@ -51,13 +44,11 @@ export const getProperties = ({
   rawNotionPage: NotionPageResponse;
 }) => rawNotionPage.block[blockId].value.properties;
 
-const getSpaceId = ({
-  blockId,
-  rawNotionPage,
-}: {
-  blockId: string;
-  rawNotionPage: NotionPageResponse;
-}) => rawNotionPage.block[blockId].value.space_id;
+const getBlock =
+  <T>(rawNotionPage: NotionPageResponse<T>) =>
+  (blockId: string) => {
+    return rawNotionPage.block[blockId];
+  };
 
 const title2RenderSchema = (textMap: NotionDatabaseText) => {
   return textMap.map(([text, options]) => ({
@@ -91,17 +82,14 @@ export const getText =
 
 export const getCollection =
   (rawNotionPage: NotionPageResponse) => (collectionId: string) => {
-    const getDatabaseByProperties = ({
-      properties,
+    const getDatabase = ({
+      block,
       schema,
-      spaceId,
-      blockId,
     }: {
-      properties: NotionDatabaseProperty;
+      block: NotionBlock<NotionDatabaseProperty>;
       schema: NotionCollectionSchema;
-      spaceId: string;
-      blockId: string;
     }) => {
+      const { id, space_id, properties } = block.value;
       if (typeof properties === 'object') {
         return pipe(
           entries,
@@ -109,22 +97,13 @@ export const getCollection =
             [string, NotionCollectionSchemaBody],
             {
               properties: NotionDatabaseProperty;
-              parsedProperties: any;
+              parsedProperties: Record<
+                string,
+                string | NotionTextSchema | string[]
+              >;
             }
           >(
-            (
-              {
-                properties,
-                parsedProperties,
-              }: {
-                properties: NotionDatabaseProperty;
-                parsedProperties: Record<
-                  string,
-                  string | NotionTextSchema | string[]
-                >;
-              },
-              [key, schema]
-            ) => {
+            ({ properties, parsedProperties }, [key, schema]) => {
               const textHandler = (property: NotionDatabaseText) => {
                 return property
                   ? property.length > 1
@@ -140,12 +119,13 @@ export const getCollection =
               ) => {
                 return property?.[0][0].split(',') || [];
               };
+
               const fileHandler = (property: NotionDatabaseFile) => {
                 const fileUrl = property[0][1][0][1];
                 const notionStorageUrlParams = new URLSearchParams();
-                notionStorageUrlParams.set('id', blockId);
+                notionStorageUrlParams.set('id', id);
                 notionStorageUrlParams.set('table', 'block');
-                notionStorageUrlParams.set('spaceId', spaceId);
+                notionStorageUrlParams.set('spaceId', space_id);
                 notionStorageUrlParams.set('width', '300');
                 notionStorageUrlParams.set('userId', '');
                 notionStorageUrlParams.set('cache', 'v2');
@@ -157,27 +137,25 @@ export const getCollection =
                   )}?${notionStorageUrlParams.toString()}`,
                 ].join('/');
               };
-              if (schema.type === NotionDatabaseTypes.text) {
-                parsedProperties[schema.name] = textHandler(
-                  properties[key] as NotionDatabaseText
-                );
-              } else if (schema.type === NotionDatabaseTypes.date) {
-                parsedProperties[schema.name] = dateHandler(
-                  properties[key] as NotionDatabaseDate
-                );
-              } else if (schema.type === NotionDatabaseTypes.multiselect) {
-                parsedProperties[schema.name] = multiselectHandler(
-                  properties[key] as NotionDatabaseMultiselect
-                );
-              } else if (schema.type === NotionDatabaseTypes.title) {
-                parsedProperties[schema.name] = textHandler(
-                  properties[key] as NotionDatabaseText
-                );
-              } else if (schema.type === NotionDatabaseTypes.file) {
-                parsedProperties[schema.name] = fileHandler(
-                  properties[key] as NotionDatabaseFile
-                );
-              }
+              const getHandler =
+                (handlers: any) => (type: NotionDatabaseTypes) => {
+                  console.log(type, 'type');
+                  if (handlers[type]) {
+                    return handlers[type];
+                  }
+                  throw new Error('Handler not registered!');
+                };
+              const getHandlerByType = getHandler({
+                [NotionDatabaseTypes.file]: fileHandler,
+                [NotionDatabaseTypes.text]: textHandler,
+                [NotionDatabaseTypes.multiselect]: multiselectHandler,
+                [NotionDatabaseTypes.date]: dateHandler,
+                [NotionDatabaseTypes.title]: textHandler,
+              });
+
+              parsedProperties[schema.name] = getHandlerByType(schema.type)(
+                properties[key]
+              );
 
               return { properties, parsedProperties };
             },
@@ -193,25 +171,22 @@ export const getCollection =
 
     return pipe(
       entries,
-      reduce<[string, NotionBlock], NotionDatabaseProperty[]>(
-        (acc, [blockId, properties]) => {
-          if (properties.value.parent_id === collectionId) {
-            (acc as NotionDatabaseProperty[]).push(
-              getDatabaseByProperties({
-                blockId,
-                spaceId: getSpaceId({ blockId, rawNotionPage }),
-                properties: getProperties({
-                  blockId,
-                  rawNotionPage,
-                }) as NotionDatabaseProperty,
-                schema: rawNotionPage.collection[collectionId].value.schema,
-              })
-            );
-          }
+      reduce<
+        [string, NotionBlock<NotionDatabaseProperty>],
+        NotionDatabaseProperty[]
+      >((acc, [blockId, properties]) => {
+        if (properties.value.parent_id === collectionId) {
+          (acc as NotionDatabaseProperty[]).push(
+            getDatabase({
+              block: getBlock<NotionDatabaseProperty>(
+                rawNotionPage as NotionPageResponse<NotionDatabaseProperty>
+              )(blockId),
+              schema: rawNotionPage.collection[collectionId].value.schema,
+            })
+          );
+        }
 
-          return acc;
-        },
-        []
-      )
+        return acc;
+      }, [])
     )(rawNotionPage.block);
   };
